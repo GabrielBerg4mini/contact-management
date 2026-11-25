@@ -41,7 +41,7 @@ class ContactController extends Controller
     {
         $contact = Contact::create($request->validated());
 
-        return redirect()->route('contacts.show', $contact)->with('success', 'Contato adicionado com sucesso.');
+        return redirect()->route('contacts.show', $contact)->with('success', 'Contact added successfully.');
     }
 
     /**
@@ -67,7 +67,7 @@ class ContactController extends Controller
     {
         $contact->update($request->validated());
 
-        return redirect()->route('contacts.show', $contact)->with('success', 'Contato atualizado com sucesso.');
+        return redirect()->route('contacts.show', $contact)->with('success', 'Contact updated successfully.');
     }
 
     /**
@@ -77,6 +77,6 @@ class ContactController extends Controller
     {
         $contact->delete();
 
-        return redirect()->route('contacts.index')->with('success', 'Contato excluído com sucesso.');
+        return redirect()->route('contacts.index')->with('success', 'Contact successfully deleted.');
     }
 }

@@ -23,7 +23,7 @@
         <a class="btn" href="{{ route('contacts.index') }}">← Return to list</a>
         <a class="btn btn--primary" href="{{ route('contacts.edit', $contact) }}">Edit</a>
         <form class="inline" method="POST" action="{{ route('contacts.destroy', $contact) }}"
-            data-confirm="Excluir o contato &quot;{{ $contact->name }}&quot;?">
+            data-confirm="Delete the contact &quot;{{ $contact->name }}&quot;?">
             @csrf
             @method('DELETE')
             <button class="btn btn--danger" type="submit">Delete</button>

@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>@yield('title', 'Contatos') - Contact Management</title>
+    <title>@yield('title', 'Contacts') - Contact Management</title>
     <link rel="stylesheet" href="{{ asset('css/contacts.css') }}">
 </head>
 

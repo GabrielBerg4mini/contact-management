@@ -41,7 +41,7 @@
                     <a class="btn btn--sm" href="{{ route('contacts.show', $contact) }}">View</a>
                     <a class="btn btn--sm" href="{{ route('contacts.edit', $contact) }}">Edit</a>
                     <form class="inline" method="POST" action="{{ route('contacts.destroy', $contact) }}"
-                        data-confirm="Excluir o contato &quot;{{ $contact->name }}&quot;?">
+                        data-confirm="Delete the contact &quot;{{ $contact->name }}&quot;?">
                         @csrf
                         @method('DELETE')
                         <button class="btn btn--sm btn--danger" type="submit">Delete</button>

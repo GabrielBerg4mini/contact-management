@@ -81,11 +81,11 @@ class ContactTest extends TestCase
     public static function invalidData(): array
     {
         return [
-            'nome curto (5 chars)' => [['name' => 'abcde'], 'name'],
-            'nome vazio' => [['name' => ''], 'name'],
-            'contato com 8 dígitos' => [['contact' => '12345678'], 'contact'],
-            'contato com letras' => [['contact' => '12345678a'], 'contact'],
-            'e-mail inválido' => [['email' => 'nao-e-email'], 'email'],
+            'short name (5 chars)' => [['name' => 'abcde'], 'name'],
+            'empty name' => [['name' => ''], 'name'],
+            '8-digit contact' => [['contact' => '12345678'], 'contact'],
+            'contact with lyrics' => [['contact' => '12345678a'], 'contact'],
+            'invalid email' => [['email' => 'nao-e-email'], 'email'],
         ];
     }
 
