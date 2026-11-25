@@ -1,66 +1,102 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Contact Management
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A CRUD web application to manage contacts, built with **Laravel 10** and **PHP 8.1**.
 
-## About Laravel
+## Features
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- Public list of contacts (search + pagination)
+- Create, edit, view details (standalone page) and delete contacts
+- Delete is a **soft delete** (Laravel `SoftDeletes`)
+- Validation: name longer than 5 characters, contact with exactly 9 digits, valid e-mail; contact and e-mail must be unique
+- Authentication: only the contact list is public; every other action requires login
+- Feature tests for CRUD, validation errors, uniqueness and access control
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Default credentials
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+| E-mail              | Password   |
+| ------------------- | ---------- |
+| `admin@admin.com` | `123456` |
 
-## Learning Laravel
+## Why Docker?
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+- **Same environment everywhere:** the app targets PHP 8.1 and Laravel 10. Docker pins those versions, so it behaves the same on any machine, regardless of what is installed locally.
+- **Nothing to install besides Docker:** PHP, Composer, extensions and MySQL run in containers, so there is no local setup to break.
+- **Database included:** MySQL runs as its own service, with the app talking to it by service name instead of a locally installed server.
+- **One command to start and one to reset:** a broken environment can be rebuilt without touching the host.
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+## Requirements
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+- [Docker](https://docs.docker.com/get-docker/) and Docker Compose
 
-## Laravel Sponsors
+## Running the project
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+```bash
+# 1. Clone the repository
+git clone <repository-url>
+cd <project-folder>
 
-### Premium Partners
+# 2. Create the environment file
+cp .env.example .env
+# In .env, DB_HOST must be the database service name (e.g. db), not 127.0.0.1
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+# 3. Start the containers
+docker compose up -d --build
 
-## Contributing
+# 4. Install dependencies
+docker compose exec app composer install
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+# 5. Generate the application key
+docker compose exec app php artisan key:generate
 
-## Code of Conduct
+# 6. Create the tables and seed the admin user and sample contacts
+docker compose exec app php artisan migrate --seed
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+The application is available at **http://localhost:8000** (adjust the port to the one in `docker-compose.yml`).
 
-## Security Vulnerabilities
+> If you only need the admin user: `docker compose exec app php artisan db:seed --class=AdminUserSeeder`
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+## Running the tests
 
-## License
+```bash
+docker compose exec app php artisan test
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## Routes
+
+| Method | URL                          | Description      | Access        |
+| ------ | ---------------------------- | ---------------- | ------------- |
+| GET    | `/contacts`                | List contacts    | Public        |
+| GET    | `/contacts/create`         | New contact form | Authenticated |
+| POST   | `/contacts`                | Store contact    | Authenticated |
+| GET    | `/contacts/{contact}`      | Contact details  | Authenticated |
+| GET    | `/contacts/{contact}/edit` | Edit form        | Authenticated |
+| PUT    | `/contacts/{contact}`      | Update contact   | Authenticated |
+| DELETE | `/contacts/{contact}`      | Soft delete      | Authenticated |
+| GET    | `/login`                   | Login page       | Guests        |
+| POST   | `/logout`                  | Logout           | Authenticated |
+
+## Project structure (main files)
+
+- `app/Models/Contact.php`: model with `SoftDeletes`
+- `app/Http/Requests/ContactRequest.php`: validation rules (create and update)
+- `app/Http/Controllers/ContactController.php`: CRUD actions
+- `app/Http/Controllers/Auth/SessionController.php`: login and logout
+- `database/migrations/*_create_contacts_table.php`: contacts table
+- `database/seeders/`: admin user and sample contacts
+- `resources/views/`: Blade views (layout, contacts, login)
+- `tests/Feature/`: contact and authentication tests
+
+## Useful commands
+
+```bash
+docker compose logs -f app                    # follow application logs
+docker compose exec app php artisan migrate:fresh --seed   # reset database
+docker compose exec app php artisan config:clear           # clear config cache
+docker compose down                           # stop containers
+```
+
+## Troubleshooting
+
+- **Login fails with correct credentials:** the admin user may not exist in this database. Run `docker compose exec app php artisan db:seed --class=AdminUserSeeder`.
+- **Database connection refused:** inside Docker, `DB_HOST` must be the database service name, not `127.0.0.1`. Then run `php artisan config:clear`.
