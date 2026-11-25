@@ -34,14 +34,14 @@ class ContactRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'name.required' => 'Informe o nome.',
-            'name.min' => 'O nome deve ter mais de 5 caracteres.',
-            'contact.required' => 'Informe um contato.',
-            'contact.digits' => 'O contato deve conter exatamente 9 dígitos.',
-            'contact.unique' => 'Este contato já está cadastrado.',
-            'email.required' => 'Informe o e-mail.',
-            'email.email' => 'Informe um e-mail válido.',
-            'email.unique' => 'Este e-mail já está cadastrado.'
+            'name.required' => 'Enter the name.',
+            'name.min' => 'The name must be more than 5 characters long.',
+            'contact.required' => 'Provide a contact.',
+            'contact.digits' => 'The contact must contain exactly 9 digits.',
+            'contact.unique' => 'This contact is already registered.',
+            'email.required' => 'Enter your email address.',
+            'email.email' => 'Enter a valid email address.',
+            'email.unique' => 'This email is already registered.'
         ];
     }
 }
