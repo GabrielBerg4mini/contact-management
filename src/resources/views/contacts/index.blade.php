@@ -1,10 +1,10 @@
 @extends('layouts.app')
 
-@section('title', 'Contacts')
+@section('title', 'Contact')
 
 @section('content')
 <div class="page-head">
-    <h1>Contacts</h1>
+    <h1>Contact</h1>
     <form method="GET" action="{{ route('contacts.index') }}" class="search">
         <input type="search" name="search" value="{{ $search }}" class="input input--search"
             placeholder="Search by name, contact, or email...">
@@ -20,16 +20,23 @@
                 <th>Name</th>
                 <th>Contact</th>
                 <th>Email</th>
-                <th class="text-right">Actions</th>
+                @auth <th class="text-right">Actions</th> @endauth
             </tr>
         </thead>
         <tbody>
             @forelse ($contacts as $contact)
             <tr>
                 <td>{{ $contact->id }}</td>
-                <td><a class="name-link" href="{{ route('contacts.show', $contact) }}">{{ $contact->name }}</a></td>
+                <td>
+                    @auth
+                    <a class="name-link" href="{{ route('contacts.show', $contact) }}">{{ $contact->name }}</a>
+                    @else
+                    {{ $contact->name }}
+                    @endauth
+                </td>
                 <td>{{ $contact->contact }}</td>
                 <td>{{ $contact->email }}</td>
+                @auth
                 <td class="text-right">
                     <a class="btn btn--sm" href="{{ route('contacts.show', $contact) }}">View</a>
                     <a class="btn btn--sm" href="{{ route('contacts.edit', $contact) }}">Edit</a>
@@ -40,10 +47,11 @@
                         <button class="btn btn--sm btn--danger" type="submit">Delete</button>
                     </form>
                 </td>
+                @endauth
             </tr>
             @empty
             <tr>
-                <td colspan="5" class="empty">No contact found.</td>
+                <td colspan="{{ auth()->check() ? 5 : 4 }}" class="empty">No contact found.</td>
             </tr>
             @endforelse
         </tbody>
